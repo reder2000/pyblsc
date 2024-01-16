@@ -5,12 +5,13 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 message("configuring ${PROJECT_NAME}...")
 
 find_package(Boost REQUIRED) # COMPONENTS math)
-
+find_package(TBB CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
     # pybind11 method:
-    pybind11_add_module(pybs pybs.cpp bs.cpp bs.h rando.cpp rando.h)
+    pybind11_add_module(pybs pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h)
 
     # Python method:
     #Python_add_library(pybs bs.cpp)
@@ -21,7 +22,7 @@ find_package(pybind11 CONFIG REQUIRED)
     #    VISIBILITY_INLINES_HIDDEN ON
     #)
 
-target_link_libraries(pybs PRIVATE pybind11::module  Boost::boost) #   Boost::math)
+target_link_libraries(pybs PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc TBB::tbbmalloc_proxy fmt::fmt-header-only) #   Boost::math)
 # target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
 
 

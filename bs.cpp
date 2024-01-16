@@ -1,26 +1,27 @@
+#include "bs.h"
 #include <algorithm>
 #include <cmath>
 #include <boost/math/tools/toms748_solve.hpp>
 #include "rando.h"
 
 
-/// Black-Scholes price : -1 put, 1 call
-double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
-
-
-/// Black-Scholes delta : -1 put, 1 call
-double BlsDelta(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
-
-/// Black-Scholes gamma : -1 put, 1 call
-double BlGamma(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
-
-/// Black-Scholes vega : -1 put, 1 call
-double BlsVega(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
-
-/// Black-Scholes implied voilatility: -1 put, 1 call
-double BlsImpliedVol(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double price);
-
-double NormCdf(double x);
+///// Black-Scholes price : -1 put, 1 call
+//double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
+//
+//
+///// Black-Scholes delta : -1 put, 1 call
+//double BlsDelta(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
+//
+///// Black-Scholes gamma : -1 put, 1 call
+//double BlGamma(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
+//
+///// Black-Scholes vega : -1 put, 1 call
+//double BlsVega(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
+//
+///// Black-Scholes implied voilatility: -1 put, 1 call
+//double BlsImpliedVol(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double price);
+//
+//double NormCdf(double x);
 
 
 
@@ -58,8 +59,9 @@ double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate
     }
     d1 = BlsD1(S, X, R, Q, Trate, Tsigma, sig);
     d2 = BlsD2(d1, Tsigma, sig);
-    double res = CoP * (S * exp(-Q * Trate) * NormCdf(CoP *d1) - CoP * X * (exp(-R * Trate) * NormCdf(CoP *d2)) );
-    //put = - S0 * exp(-Q * T) * rando::NormCdf(-d1) + X * exp(-R * T) * rando::NormCdf(-d2);
+    double res =  S * exp(-Q * Trate) * NormCdf(CoP *d1) - X * exp(-R * Trate) * NormCdf(CoP *d2) ;
+    res *= CoP;
+    // double put = - S * exp(-Q * Trate) * NormCdf(-d1) + X * exp(-R * Trate) * NormCdf(-d2);
     return res;
 }
 
