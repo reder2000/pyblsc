@@ -2,6 +2,8 @@
 
 double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
 
+double BlsPrice_noQ(double CoP, double S, double X, double R, double Trate, double Tsigma, double sig);
+
 
 /// Black-Scholes delta : -1 put, 1 call
 double BlsDelta(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
@@ -14,3 +16,5 @@ double BlsVega(double CoP, double S, double X, double R, double Q, double Trate,
 
 /// Black-Scholes implied voilatility: -1 put, 1 call
 double BlsImpliedVol(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double price);
+
+double BlsImpliedVol_noQ(double CoP, double S, double X, double R, double Trate, double Tsigma, double price);
