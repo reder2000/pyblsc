@@ -8,6 +8,7 @@ find_package(Boost REQUIRED) # COMPONENTS math)
 find_package(TBB CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(MKL CONFIG REQUIRED)
+find_path(BSHOSHANY_THREAD_POOL_INCLUDE_DIRS "BS_thread_pool.hpp")
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
@@ -24,7 +25,9 @@ find_package(pybind11 CONFIG REQUIRED)
     #)
 
 target_link_libraries(pybs PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc TBB::tbbmalloc_proxy fmt::fmt-header-only MKL::MKL) #   Boost::math)
+target_include_directories(pybs PRIVATE ${BSHOSHANY_THREAD_POOL_INCLUDE_DIRS})
 # target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
 
+set_property(TARGET pybs PROPERTY CXX_STANDARD 20)
 
 message("... {PROJECT_NAME} configuring done")

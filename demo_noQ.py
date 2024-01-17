@@ -72,16 +72,18 @@ if 0 :
     print (nbcalcs/     timeit.Timer(f3).timeit(number=nruns) )
 
 
-def f(n:int):
-    params= numpy.array([line1]*n).transpose()
-    res = numpy.array([numpy.nan] * params.shape[1])
-    ppp.bls_prices_noq_mkl(res, params)
+def f(res,params):
+    # params= numpy.array([line1]*n)
+    # res = numpy.array([numpy.nan] * params.shape[0])
+    ppp.bls_prices_noq(res, params)
 
-def ff(n:int):
+def ff(n:int):  
     for i in range(n):
         ppp.bls_price_noq(*line1)
 
 
-nruns = 123
-for n in range(1,10000,10):
-    print(n,int(nruns*n / timeit.Timer(lambda :f(n)).timeit(number=nruns)/1000) ,'k')
+nruns = 100
+for n in range(1,10000,50):
+    params= numpy.array([line1]*n)
+    res = numpy.array([numpy.nan] * params.shape[0])
+    print(n,int(nruns*n / timeit.Timer(lambda :f(res,params)).timeit(number=nruns)/1000) ,'k')

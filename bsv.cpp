@@ -6,6 +6,10 @@
 #include <fmt/format.h>
 #include <mkl.h>
 
+
+#include <BS_thread_pool.hpp> // BS::thread_pool
+// #include <future>             // std::future
+
 constexpr size_t v_limit = 5000	;
 
 
@@ -73,22 +77,24 @@ void BlsPrices_noQ2(double* dest, size_t dim, double const* src)
 	}
 }
 
-constexpr size_t v_limit2 = 30;
+constexpr size_t v_limit2 = 1000;
+constexpr size_t v_limit2_ch = 500;
 
 
 void BlsPrices_noQ(double* dest, size_t dim, double const* src)
 {
 
 
-	auto f = [&dest, &src](size_t i)
+	auto f = [&](size_t i)
 		{
 			auto psrc = src + 7 * i;
 			double  CoP, S, X, R, Trate, Tsigma, sig;
 			std::tie(CoP, S, X, R, Trate, Tsigma, sig) = std::make_tuple(*psrc, *(psrc + 1), *(psrc + 2), *(psrc + 3), *(psrc + 4), *(psrc + 5), *(psrc + 6));
 			// fmt::print("{},{},{},{},{},{},{},{}\n", CoP, S, X, R, Q, Trate, Tsigma, sig);
 			*(dest + i) = BlsPrice_noQ(CoP, S, X, R, Trate, Tsigma, sig);
+			// std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		};
-	if (dim < v_limit2) {
+	if (dim < v_limit2_ch) {
 		for (size_t i = 0; i < dim; ++i)
 		{
 			f(i);
@@ -96,17 +102,19 @@ void BlsPrices_noQ(double* dest, size_t dim, double const* src)
 	}
 	else
 	{
+#if 1
 		std::vector<std::pair<size_t, size_t>> v;
 		v.reserve(dim / v_limit2 + 1);
 		size_t i = 0;
 		while (i < dim)
 		{
-			size_t j = std::min(i + v_limit2, dim);
+			size_t j = std::min(i + v_limit2_ch, dim);
 			v.push_back({ i, j });
 			i = j;
 		}
 		auto g = [&](size_t j)
 			{
+				//fmt::print("{}/{}...", v[j].first, v[j].second);
 				for (size_t i = v[j].first; i < v[j].second; i++)
 					f(i);
 			};
@@ -120,7 +128,12 @@ void BlsPrices_noQ(double* dest, size_t dim, double const* src)
 					f(i);
 			};
 		tbb::parallel_for(tbb::blocked_range<size_t>(0, dim), apply);
-#endif	
+#endif
+#else
+		BS::thread_pool pool(12);
+		BS::multi_future<void> loop_future = pool.submit_loop((size_t)0, dim, f, v_limit2_ch);
+		loop_future.wait();
+#endif
 	}
 }
 
