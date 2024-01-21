@@ -34,7 +34,7 @@ void FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, do
     FBlsGreeks_seq(out.mutable_data(0), nopts, greek, CoP, F, X_s.data(0), df, Tsigma, sig_s.data(0));
 }
 
-PYBIND11_MODULE(pybs, m) {
+PYBIND11_MODULE(pyblsc, m) {
 
     m.doc() = "Black Scholes computations";
 

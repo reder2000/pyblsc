@@ -2,15 +2,15 @@ import timeit
 
 import numpy
 import sys
-# sys.path.append(r"C:\dev\qustrat\pybs\mybuild\Release")
-#sys.path.append(r"C:\dev\qustrat\pybs\mybuild\RelWithDebInfo")
-sys.path.append(r"C:\dev\qustrat\pybs\mybuild")
-#import pybs as ppp
-# import mybuild.Release.pybs as pybs
-# from mybuild.Release.pybs import BSGreeks as Gr
-#from mybuild.RelWithDebInfo.pybs import BSGreeks as Gr
-import mybuild.RelWithDebInfo.pybs as pybs
-from mybuild.RelWithDebInfo.pybs import BSGreeks as Gr
+# sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\Release")
+#sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\RelWithDebInfo")
+sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild")
+#import pyblsc as ppp
+# import mybuild.Release.pyblsc as pyblsc
+# from mybuild.Release.pyblsc import BSGreeks as Gr
+#from mybuild.RelWithDebInfo.pyblsc import BSGreeks as Gr
+import mybuild.RelWithDebInfo.pyblsc as pyblsc
+from mybuild.RelWithDebInfo.pyblsc import BSGreeks as Gr
 
 # "CoP"_a, "S"_a, "X"_a, "R"_a, "Trate"_a, "Tsigma"_a, "sig"_a
 # 1.(greek: BSGreeks, CoP: float, F: float, X: float, df: float, Tsigma: float, sig: float) -> float
@@ -18,18 +18,18 @@ CoP=1 ; F=1.01 ; X=1.05 ; df=0.99 ; Tsigma=1. ; sig= 0.3
 line1 = [CoP,F,X,df,Tsigma,sig]
 line2 = [-1,F,X,df,Tsigma,sig]
 
-c = pybs.FBlsGreek(Gr.price, *line1)
-p = pybs.FBlsGreek(Gr.price,*line2)
+c = pyblsc.FBlsGreek(Gr.price, *line1)
+p = pyblsc.FBlsGreek(Gr.price,*line2)
 line3 = [CoP,F,X,df,Tsigma,c]
 line4 = [-1,F,X,df,Tsigma,p]
-print(pybs.FBlsGreek(Gr.implied_volatility,*line3))
-print(pybs.FBlsGreek(Gr.implied_volatility,*line4))
+print(pyblsc.FBlsGreek(Gr.implied_volatility,*line3))
+print(pyblsc.FBlsGreek(Gr.implied_volatility,*line4))
 
 def blsprice_loop(n, _): # 1.8 M opt / sec
      # for i in range(n//2+1):
      for i in range(n):
-        pybs.FBlsGreek(Gr.price, *line1)
-         # pybs.FBlsGreek(Gr.price, *line2)
+        pyblsc.FBlsGreek(Gr.price, *line1)
+         # pyblsc.FBlsGreek(Gr.price, *line2)
 
 def blsprice_seq(params,res,n):  # 52.8 M opt / sec
     if n:
@@ -39,7 +39,7 @@ def blsprice_seq(params,res,n):  # 52.8 M opt / sec
         params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pybs.FBlsGreeks_seq(res,Gr.price,*params)
+    pyblsc.FBlsGreeks_seq(res,Gr.price,*params)
 
 
 def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
@@ -50,7 +50,7 @@ def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
         params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pybs.FBlsGreeks_seq(res,Gr.implied_volatility,*params)
+    pyblsc.FBlsGreeks_seq(res,Gr.implied_volatility,*params)
 
 
 # def f1():

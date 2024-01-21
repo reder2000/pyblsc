@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-set(PROJECT_NAME pybs)
+set(PROJECT_NAME pyblsc)
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 message("configuring ${PROJECT_NAME}...")
@@ -17,7 +17,7 @@ find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
     # pybind11 method:
-    pybind11_add_module(pybs pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp)
+    pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp)
 
     # Python method:
     #Python_add_library(pybs bs.cpp)
@@ -28,11 +28,11 @@ find_package(pybind11 CONFIG REQUIRED)
     #    VISIBILITY_INLINES_HIDDEN ON
     #)
 
-target_link_libraries(pybs PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc TBB::tbbmalloc_proxy fmt::fmt-header-only ) # MKL::MKL  Boost::math)
-target_include_directories(pybs PRIVATE ${BSHOSHANY_THREAD_POOL_INCLUDE_DIRS})
+target_link_libraries(pyblsc PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc TBB::tbbmalloc_proxy fmt::fmt-header-only ) # MKL::MKL  Boost::math)
+target_include_directories(pyblsc PRIVATE ${BSHOSHANY_THREAD_POOL_INCLUDE_DIRS})
 # target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
 
-set_property(TARGET pybs PROPERTY CXX_STANDARD 23)
+set_property(TARGET pyblsc PROPERTY CXX_STANDARD 23)
 
 if (MSVC)
     if(DEFINED Python_EXECUTABLE)
@@ -69,13 +69,13 @@ endif()
 if ("${my_stubgen}" STREQUAL "my_stubgen-NOTFOUND")
 	MESSAGE("stubgen not found. Python IDE intellisense may not be available. Consider installing mypy (pip install mypy)")
 else ()
-#file(GENERATE OUTPUT filename.txt CONTENT "${CMAKE_CURRENT_BINARY_DIR}/pybs.pyi")
+#file(GENERATE OUTPUT filename.txt CONTENT "${CMAKE_CURRENT_BINARY_DIR}/pyblsc.pyi")
     MESSAGE("stubgen found at ${my_stubgen}")
-add_custom_command(TARGET pybs POST_BUILD
-    COMMAND "${my_stubgen}" -p pybs -o .
-    # COMMAND "${my_stubgen}" -p pybs.pybs -o .
-    WORKING_DIRECTORY $<TARGET_FILE_DIR:pybs>
-    BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/pybs.pyi" "${CMAKE_CURRENT_BINARY_DIR}/pybs/pybs.pyi"
+add_custom_command(TARGET pyblsc POST_BUILD
+    COMMAND "${my_stubgen}" -p pyblsc -o .
+    # COMMAND "${my_stubgen}" -p pyblsc.pyblsc -o .
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:pyblsc>
+    BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/pyblsc.pyi" "${CMAKE_CURRENT_BINARY_DIR}/pyblsc/pyblsc.pyi"
     COMMENT "generating python stubs..."
 )
 

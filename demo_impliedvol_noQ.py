@@ -2,10 +2,10 @@ import timeit
 
 import numpy
 import sys
-sys.path.append(r"C:\dev\qustrat\pybs\mybuild\Release")
-#sys.path.append(r"C:\dev\qustrat\pybs\mybuild\RelWithDebInfo")
+sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\Release")
+#sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\RelWithDebInfo")
 
-import pybs as ppp
+import pyblsc as ppp
 
 # "CoP"_a, "S"_a, "X"_a, "R"_a, "Trate"_a, "Tsigma"_a, "sig"_a
 line1 = [1.,1.,1.,0.05,1.,0.99,0.3]
