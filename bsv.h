@@ -1,10 +1,8 @@
 #pragma once
 
-void BlsPrices(double* dest, size_t dim, double const* src);
-void BlsPrices_noQ(double* dest, size_t dim, double const* src);
+void FBlsPrices(double* dest, size_t dim, double const* src);
 
-void BlsImpliedVols_noQ(double* dest, size_t dim, double const* src);
+void FBlsImpliedVols(double* dest, size_t dim, double const* src);
 
-#if !	defined(WITH_MKL)
-void BlsPrices_noQ_mkl(double* dest, size_t dim, double const* src);
-#endif
+// forwards implied vols 
+// double FBlsImpliedVols_per_strike(double* dest, size_t dim, double CoP, double F, double df, double* X, double Tsigma, double* prices);	

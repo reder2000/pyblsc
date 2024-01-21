@@ -65,10 +65,21 @@ def f2():
 #     res = numpy.array([numpy.nan]*params.shape[1])
 #     ppp.bls_prices_noq_mkl(res,params)
 
-nruns = 12345
-nbcalcs = 2*5*21*nruns
-print (nbcalcs/  timeit.Timer(f0).timeit(number=nruns)  )
-print (nbcalcs/ timeit.Timer(f1).timeit(number=nruns) )
-print (nbcalcs/     timeit.Timer(f2).timeit(number=nruns) )
-# print (nbcalcs/     timeit.Timer(f3).timeit(number=nruns) )
-#
+# nruns = 12345
+# nbcalcs = 2*5*21*nruns
+# print (nbcalcs/  timeit.Timer(f0).timeit(number=nruns)  )
+# print (nbcalcs/ timeit.Timer(f1).timeit(number=nruns) )
+# print (nbcalcs/     timeit.Timer(f2).timeit(number=nruns) )
+# # print (nbcalcs/     timeit.Timer(f3).timeit(number=nruns) )
+# #
+
+
+
+def f(res,params):
+     ppp.bls_impliedvols_noq(res,params)
+
+nruns = 100
+for n in range(1,10000,50):
+    params= numpy.array([line1]*n)
+    res = numpy.array([numpy.nan] * params.shape[0])
+    print(n,int(nruns*n / timeit.Timer(lambda :f(res,params)).timeit(number=nruns)/1000) ,'k')

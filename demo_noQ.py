@@ -2,88 +2,131 @@ import timeit
 
 import numpy
 import sys
-sys.path.append(r"C:\dev\qustrat\pybs\mybuild\Release")
+# sys.path.append(r"C:\dev\qustrat\pybs\mybuild\Release")
 #sys.path.append(r"C:\dev\qustrat\pybs\mybuild\RelWithDebInfo")
-
-import pybs as ppp
+sys.path.append(r"C:\dev\qustrat\pybs\mybuild")
+#import pybs as ppp
+# import mybuild.Release.pybs as pybs
+# from mybuild.Release.pybs import BSGreeks as Gr
+#from mybuild.RelWithDebInfo.pybs import BSGreeks as Gr
+import mybuild.RelWithDebInfo.pybs as pybs
+from mybuild.RelWithDebInfo.pybs import BSGreeks as Gr
 
 # "CoP"_a, "S"_a, "X"_a, "R"_a, "Trate"_a, "Tsigma"_a, "sig"_a
-line1 = [1.,1.,1.,0.05,1.,0.99,0.3]
-line2 = [-1.,1.,1.,0.05,1.,0.99,0.3]
-line3 = [1.,1.1,1.,0.05,1.,0.99,0.3]
+# 1.(greek: BSGreeks, CoP: float, F: float, X: float, df: float, Tsigma: float, sig: float) -> float
+CoP=1 ; F=1.01 ; X=1.05 ; df=0.99 ; Tsigma=1. ; sig= 0.3
+line1 = [CoP,F,X,df,Tsigma,sig]
+line2 = [-1,F,X,df,Tsigma,sig]
 
-print(ppp.bls_price_noq(*line1))
-print(ppp.bls_price_noq(*line2))
-print(ppp.bls_price_noq(*line3))
+c = pybs.FBlsGreek(Gr.price, *line1)
+p = pybs.FBlsGreek(Gr.price,*line2)
+line3 = [CoP,F,X,df,Tsigma,c]
+line4 = [-1,F,X,df,Tsigma,p]
+print(pybs.FBlsGreek(Gr.implied_volatility,*line3))
+print(pybs.FBlsGreek(Gr.implied_volatility,*line4))
 
-def f0():
-    for i in range(7*5*2):
-        ppp.bls_price_noq(*line1)
-        ppp.bls_price_noq(*line2)
-        ppp.bls_price_noq(*line3)
-        #print(res)
+def blsprice_loop(n, _): # 1.8 M opt / sec
+     # for i in range(n//2+1):
+     for i in range(n):
+        pybs.FBlsGreek(Gr.price, *line1)
+         # pybs.FBlsGreek(Gr.price, *line2)
 
-def f1():
-    params= numpy.array([line1,line2,line3,line1,line2,line3])
-    res = numpy.array([numpy.nan] * params.shape[0])
-    for i in range(7*5):
-        ppp.bls_prices_noq(res, params)
-
-def f2():
-    #params = numpy.array([line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3])
-    params = numpy.array(
-        [line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,],dtype=float)
-    res = numpy.array([numpy.nan]*params.shape[0])
-    ppp.bls_prices_noq(res,params)
-
-def f3():
-    #params = numpy.array([line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3])
-    params = numpy.array(
-        [line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
-         line2, line3, line1, line2, line3,]).transpose()
-    res = numpy.array([numpy.nan]*params.shape[1])
-    ppp.bls_prices_noq_mkl(res,params)
-
-if 0 :
-    nruns = 12345
-    nbcalcs = 2*5*21*nruns
-    print (nbcalcs/  timeit.Timer(f0).timeit(number=nruns)  )
-    print (nbcalcs/ timeit.Timer(f1).timeit(number=nruns) )
-    print (nbcalcs/     timeit.Timer(f2).timeit(number=nruns) )
-    print (nbcalcs/     timeit.Timer(f3).timeit(number=nruns) )
+def blsprice_seq(params,res,n):  # 52.8 M opt / sec
+    if n:
+        params = list(line1)
+        params[2] = numpy.array([ params[2]] * n )
+        params[-1] = numpy.array([params[-1]] * n)
+        params += [False]
+        res = numpy.array([0.]*n)
+        return params,res
+    pybs.FBlsGreeks_seq(res,Gr.price,*params)
 
 
-def f(res,params):
-    # params= numpy.array([line1]*n)
-    # res = numpy.array([numpy.nan] * params.shape[0])
-    ppp.bls_prices_noq(res, params)
+def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
+    if n:
+        params = list(line3)
+        params[2] = numpy.array([ params[2]] * n )
+        params[-1] = numpy.array([params[-1]] * n)
+        params += [False]
+        res = numpy.array([0.]*n)
+        return params,res
+    pybs.FBlsGreeks_seq(res,Gr.implied_volatility,*params)
 
-def ff(n:int):  
-    for i in range(n):
-        ppp.bls_price_noq(*line1)
+
+# def f1():
+#     params= numpy.array([line1,line2,line3,line1,line2,line3])
+#     res = numpy.array([numpy.nan] * params.shape[0])
+#     for i in range(7*5):
+#         ppp.bls_prices_noq(res, params)
+#
+# def f2():
+#     #params = numpy.array([line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3])
+#     params = numpy.array(
+#         [line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,],dtype=float)
+#     res = numpy.array([numpy.nan]*params.shape[0])
+#     ppp.bls_prices_noq(res,params)
+#
+# def f3():
+#     #params = numpy.array([line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3,line1,line2,line3])
+#     params = numpy.array(
+#         [line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1, line2, line3, line1,
+#          line2, line3, line1, line2, line3,]).transpose()
+#     res = numpy.array([numpy.nan]*params.shape[1])
+#     ppp.bls_prices_noq_mkl(res,params)
+#
+# if 0 :
+#     nruns = 12345
+#     nbcalcs = 2*5*21*nruns
+#     print (nbcalcs/  timeit.Timer(f0).timeit(number=nruns)  )
+#     print (nbcalcs/ timeit.Timer(f1).timeit(number=nruns) )
+#     print (nbcalcs/     timeit.Timer(f2).timeit(number=nruns) )
+#     print (nbcalcs/     timeit.Timer(f3).timeit(number=nruns) )
+#
+#
+# def f(res,params):
+#     # params= numpy.array([line1]*n)
+#     # res = numpy.array([numpy.nan] * params.shape[0])
+#     ppp.bls_prices_noq(res, params)
+#     # ppp.bls_prices_noq_mkl(res, params)
+#
+# def ff(n:int):
+#     for i in range(n):
+#         ppp.bls_price_noq(*line1)
 
 
-nruns = 100
-for n in range(1,10000,50):
-    params= numpy.array([line1]*n)
-    res = numpy.array([numpy.nan] * params.shape[0])
-    print(n,int(nruns*n / timeit.Timer(lambda :f(res,params)).timeit(number=nruns)/1000) ,'k')
+nruns = 10000
+for n in range(1,10,1):
+    if 0 : # single call / loop
+        # single call is almost already full speed
+        print(n, int(nruns * n / timeit.Timer(lambda : blsprice_loop(n, None)).timeit(number=nruns) / 1000), 'k')
+    if 1 : # multi call / loop
+        # // better > 500
+        params,res =  blsprice_seq(0,0,n)
+        print(n, int(nruns * n / timeit.Timer(lambda: blsprice_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
+        params[-1] = True
+        print(n, int(nruns * n / timeit.Timer(lambda: blsprice_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
+    # // better > 20 (ivol)
+    params,res =  blsprice_inv_seq(0,0,n)
+    print(n, int(nruns * n / timeit.Timer(lambda: blsprice_inv_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
+    params[-1] = True
+    print(n, int(nruns * n / timeit.Timer(lambda: blsprice_inv_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
+
