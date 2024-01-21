@@ -22,7 +22,7 @@ find_package(pybind11 CONFIG REQUIRED)
     # Python method:
     #Python_add_library(pybs bs.cpp)
     #target_link_libraries(pybs pybind11::headers)
-    #set_target_properties(pybs PROPERTIES
+    #set_target_properties(pybs  PROPERTIES
     #    INTERPROCEDURAL_OPTIMIZATION ON
     #    CXX_VISIBILITY_PRESET ON
     #    VISIBILITY_INLINES_HIDDEN ON

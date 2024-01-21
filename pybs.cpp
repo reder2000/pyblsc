@@ -48,8 +48,8 @@ PYBIND11_MODULE(pyblsc, m) {
     m.def("FBlsGreek", &FBlsGreek, "Black Scholes forward price",
         "greek"_a, "CoP"_a, "F"_a, "X"_a, "df"_a, "Tsigma"_a, "sig"_a);
 
-    //m.def("FBlsGreeks_seq", &FBlsGreeks_seq_py, "Black Scholes forward price",
-      // "dst"_a , "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a, "par"_a);
+    m.def("FBlsGreeks_seq_par", &_FBlsGreeks_seq_py, "Black Scholes forward price",
+       "dst"_a , "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a, "par"_a);
 
     m.def("FBlsGreeks_seq", &FBlsGreeks_seq_py, "Black Scholes forward price",
         "dst"_a, "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a);

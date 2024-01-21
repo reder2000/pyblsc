@@ -26,16 +26,21 @@ double FBlsImpliedVol(double CoP, double F,double X,  double df, double Tsigma, 
 			double pr = FBlsPrice(CoP, F, X, df, Tsigma, sig);
 			return pr - price;
 		};
-	std::uintmax_t max_iter{ 10 };
-
-	auto pres =
-		boost::math::tools::toms748_solve(
-			f,
-			0.000001,
-			10.,
-			boost::math::tools::eps_tolerance<double>{},
-			max_iter);
-	return pres.first;
+	std::uintmax_t max_iter{ 50 };
+	try {
+		auto pres =
+			boost::math::tools::toms748_solve(
+				f,
+				0.000001,
+				5.	,
+				boost::math::tools::eps_tolerance<double>{32},
+				max_iter);
+		return pres.first;
+	}
+	catch (boost::exception&)
+	{
+		return std::numeric_limits<double>::quiet_NaN();
+	}
 
 }
 
