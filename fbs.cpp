@@ -65,7 +65,7 @@ double FBlsGamma(double /*CoP*/, double F, double X, double df, double Tsigma, d
 	double res;
 	double one_upon_sst = 1. / (sig * sqrt(Tsigma));
 	double d1 = FBlsD1(F, X, Tsigma, sig);
-	res = df * NormCdf(d1) * one_upon_sst / F;
+	res = df * NormPdf(d1) * one_upon_sst / F;
 	return res;
 }
 
@@ -74,7 +74,7 @@ double FBlsVega(double /*CoP*/, double F, double X, double df, double Tsigma, do
 {
 	double res;
 	double d1 = FBlsD1(F, X, Tsigma, sig);
-	res = df * NormCdf(d1) * sqrt(Tsigma) * F;
+	res = df * NormPdf(d1) * sqrt(Tsigma) * F;
 	return res;
 
 }
