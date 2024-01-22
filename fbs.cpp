@@ -2,9 +2,11 @@
 #include <algorithm>
 #include <cmath>
 #include <boost/math/tools/toms748_solve.hpp>
+#include <boost/math/tools/roots.hpp>
 #include "rando.h"
 #include <tbb/parallel_for.h>
 
+constexpr size_t ndigits = 23;
 
 double FBlsPrice(double CoP, double F, double X, double DF, double Tsigma, double sig)
 {
@@ -18,7 +20,7 @@ double FBlsPrice(double CoP, double F, double X, double DF, double Tsigma, doubl
 	return res;
 }
 
-double FBlsImpliedVol(double CoP, double F,double X,  double df, double Tsigma, double price)
+double FBlsImpliedVol2(double CoP, double F,double X,  double df, double Tsigma, double price)
 {
 	auto f = [=](double sig)
 		{
@@ -33,7 +35,7 @@ double FBlsImpliedVol(double CoP, double F,double X,  double df, double Tsigma, 
 				f,
 				0.000001,
 				5.	,
-				boost::math::tools::eps_tolerance<double>{32},
+				boost::math::tools::eps_tolerance<double>{ndigits},
 				max_iter);
 		return pres.first;
 	}
@@ -43,6 +45,8 @@ double FBlsImpliedVol(double CoP, double F,double X,  double df, double Tsigma, 
 	}
 
 }
+
+
 
 inline double FBlsD1(double F, double X, double Tsigma, double sig)
 {
@@ -78,6 +82,30 @@ double FBlsVega(double /*CoP*/, double F, double X, double df, double Tsigma, do
 	return res;
 
 }
+
+double FBlsImpliedVol(double CoP, double F, double X, double df, double Tsigma, double price)
+{
+	auto f = [=](double sig)
+		{
+			//fmt::print("{}/{}/{}")
+			double pr = FBlsPrice(CoP, F, X, df, Tsigma, sig);
+			double ve = FBlsVega(CoP, F, X, df, Tsigma, sig);
+			return std::pair{ pr - price,ve };
+		};
+	std::uintmax_t max_iter{ 50 };
+	try {
+		auto pres =
+			boost::math::tools::newton_raphson_iterate(f, 0.3, 0.000001,
+				5., ndigits);
+		return pres;
+	}
+	catch (boost::exception&)
+	{
+		return std::numeric_limits<double>::quiet_NaN();
+	}
+
+}
+
 
 double FBlsGreek(BSGreeks greek, double CoP, double F, double X, double df, double Tsigma, double sig)
 {
@@ -118,7 +146,7 @@ void FBlsGreeks_seq(double* res, size_t nopts, BSGreeks greek, double CoP, doubl
 {
 	using funt = decltype(&FBlsDelta);
 	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
-	if ((greek == BSGreeks::implied_volatility && nopts>=20) || (nopts>=500))
+	if ((greek == BSGreeks::implied_volatility && nopts>=8) || (nopts>=500))
 	{
 		auto f = [&](size_t i)
 			{
