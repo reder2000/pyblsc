@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 
 void FBlsPrices(double* dest, size_t dim, double const* src);
 

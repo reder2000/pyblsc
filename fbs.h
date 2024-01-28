@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 
 //double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
 //

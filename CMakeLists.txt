@@ -28,7 +28,11 @@ find_package(pybind11 CONFIG REQUIRED)
     #    VISIBILITY_INLINES_HIDDEN ON
     #)
 
-target_link_libraries(pyblsc PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc TBB::tbbmalloc_proxy fmt::fmt-header-only ) # MKL::MKL  Boost::math)
+if (MSVC)
+    set (MSVC_EXTRA_LIBS TBB::tbbmalloc_proxy )
+endif()
+
+target_link_libraries(pyblsc PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc fmt::fmt-header-only ${MSVC_EXTRA_LIBS} ) # MKL::MKL  Boost::math)
 target_include_directories(pyblsc PRIVATE ${BSHOSHANY_THREAD_POOL_INCLUDE_DIRS})
 # target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
 
