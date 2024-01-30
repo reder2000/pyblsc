@@ -85,6 +85,9 @@ add_custom_command(TARGET pyblsc POST_BUILD
 
 endif()
 
+	add_subdirectory(tests)
+	enable_testing()
+
 
 message("... {PROJECT_NAME} configuring done")
 
