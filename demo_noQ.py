@@ -4,13 +4,15 @@ import numpy
 import sys
 # sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\Release")
 #sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\RelWithDebInfo")
-sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild")
+#sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild")
 #import pyblsc as ppp
 # import mybuild.Release.pyblsc as pyblsc
 # from mybuild.Release.pyblsc import BSGreeks as Gr
 #from mybuild.RelWithDebInfo.pyblsc import BSGreeks as Gr
-import mybuild.Release.pyblsc as pyblsc
-from mybuild.Release.pyblsc import BSGreeks as Gr
+#import mybuild.Release.pyblsc as pyblsc
+import pyblsc
+from pyblsc import  BSGreeks as Gr
+#from mybuild.Release.pyblsc import BSGreeks as Gr
 
 # "CoP"_a, "S"_a, "X"_a, "R"_a, "Trate"_a, "Tsigma"_a, "sig"_a
 # 1.(greek: BSGreeks, CoP: float, F: float, X: float, df: float, Tsigma: float, sig: float) -> float
@@ -35,23 +37,31 @@ def blsprice_loop(n, _): # 1.8 M opt / sec
 def blsprice_seq(params,res,n):  # 52.8 M opt / sec
     if n:
         params = list(line1)
-        params[2] = numpy.array([ params[2]] * n )
-        params[-1] = numpy.array([params[-1]] * n)
-        params += [False]
+        if 1:
+            params[2] = numpy.array([ params[2]] * n )
+            params[-1] = numpy.array([params[-1]] * n)
+        else:
+            params[2] = [_params[2]] * n  # list(numpy.array([ params[2]] * n ))
+            params[-1] = [_params[-1]] * n  # list(numpy.array([params[-1]] * n))
+        # params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pyblsc.FBlsGreeks_seq_par(res,Gr.price,*params)
+    pyblsc.FBlsGreeks_seq(Gr.price,*params)
 
 
 def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
     if n:
         params = list(line3)
-        params[2] = numpy.array([ params[2]] * n )
-        params[-1] = numpy.array([params[-1]] * n)
-        params += [False]
+        if 1:
+            params[2] = numpy.array([ params[2]] * n )
+            params[-1] = numpy.array([params[-1]] * n)
+        else:
+            params[2] = [params[2]]*n # list(numpy.array([ params[2]] * n ))
+            params[-1] = [params[-1]]*n # list(numpy.array([params[-1]] * n))
+        # params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pyblsc.FBlsGreeks_seq_par(res,Gr.implied_volatility,*params)
+    pyblsc.FBlsGreeks_seq(Gr.implied_volatility,*params)
 
 
 # def f1():
@@ -129,6 +139,6 @@ for n in range(1,1000,2):
         # // better > 20 (ivol)
         params,res =  blsprice_inv_seq(0,0,n)
         print(n, int(nruns * n / timeit.Timer(lambda: blsprice_inv_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
-        params[-1] = True
+        # params[-1] = True
         print(n, int(nruns * n / timeit.Timer(lambda: blsprice_inv_seq(params,res,0)).timeit(number=nruns) / (1000)), 'k')
 

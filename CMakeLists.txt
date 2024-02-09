@@ -17,7 +17,7 @@ find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
     # pybind11 method:
-    pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp)
+    pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp setup.py)
 
     # Python method:
     #Python_add_library(pybs bs.cpp)

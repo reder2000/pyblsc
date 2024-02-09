@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <vector>
 
 //double BlsPrice(double CoP, double S, double X, double R, double Q, double Trate, double Tsigma, double sig);
 //
@@ -47,4 +48,6 @@ double FBlsGreek(BSGreeks greek, double CoP, double F, double X, double DF, doub
 // test only
 void _FBlsGreeks_seq(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig, bool par);
 
-void FBlsGreeks_seq(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig);
+//void FBlsGreeks_seq_old(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig);
+
+std::vector<double>  FBlsGreeks_seq(BSGreeks greek, double CoP, double F, const std::vector<double>& X, double df, double Tsigma, const std::vector<double>& sig);

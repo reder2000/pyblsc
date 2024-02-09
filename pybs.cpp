@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 #include "fbs.h"
 #include "bsv.h"
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -21,17 +22,13 @@ void _FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, d
     _FBlsGreeks_seq(out.mutable_data(0), nopts, greek, CoP, F, X_s.data(0), df, Tsigma, sig_s.data(0),par);
 }
 
-void FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, double F, py::array_t<double> cX_s, double df, double Tsigma, py::array_t<double> csig_s)
+//void FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, double F, py::array_t<double> cX_s, double df, double Tsigma, py::array_t<double> csig_s)
+// void FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, double F, py::array_t<double> cX_s, double df, double Tsigma, py::array_t<double> csig_s)
+std::vector<double>  FBlsGreeks_seq_py(BSGreeks greek, double CoP, double F, const std::vector<double>& X, double df, double Tsigma, const std::vector<double>& sig)
 {
-    auto out = n_out.mutable_unchecked<1>();
-    auto X_s = cX_s.unchecked<1>();
-    auto sig_s = csig_s.unchecked<1>();
-    size_t nopts = out.shape(0);
-    if (nopts != X_s.shape(0))
-        throw std::range_error(fmt::format("results {} and strikes size {} must be equal", out.shape(0), X_s.shape(0)));
-    if (sig_s.shape(0) != X_s.shape(0))
-        throw std::range_error(fmt::format("strikes size {} and prices/vols {}must be equal", X_s.shape(0), sig_s.shape(0)));
-    FBlsGreeks_seq(out.mutable_data(0), nopts, greek, CoP, F, X_s.data(0), df, Tsigma, sig_s.data(0));
+    if (X.size() != sig.size())
+        throw std::range_error(fmt::format("results {} and strikes size {} must be equal", X.size(), sig.size()));
+    return FBlsGreeks_seq(greek, CoP, F, X, df, Tsigma, sig);
 }
 
 PYBIND11_MODULE(pyblsc, m) {
@@ -52,7 +49,7 @@ PYBIND11_MODULE(pyblsc, m) {
        "dst"_a , "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a, "par"_a);
 
     m.def("FBlsGreeks_seq", &FBlsGreeks_seq_py, "Black Scholes forward price",
-        "dst"_a, "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a);
+        "greek"_a, "CoP"_a, "F"_a, "X_s"_a, "df"_a, "Tsigma"_a, "sig_s"_a);
 
 
 //    m.def("bls_price_noq", &BlsPrice_noQ, "Black Scholes price",
