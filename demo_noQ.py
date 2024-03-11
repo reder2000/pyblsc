@@ -61,7 +61,7 @@ def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
         # params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pyblsc.FBlsGreeks_seq(Gr.implied_volatility,*params)
+    pyblsc.FBlsGreeks_seq(res,Gr.implied_volatility,*params)
 
 
 # def f1():

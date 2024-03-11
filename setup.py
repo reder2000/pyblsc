@@ -127,7 +127,7 @@ class CMakeBuild(build_ext):
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pyblsc",
-    version="0.0.7",
+    version="0.0.8",
     author="Richard Rouge",
     author_email="rouge.richard@free.fr",
     description="Fast black scholes",

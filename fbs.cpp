@@ -143,7 +143,7 @@ void _FBlsGreeks_seq( double *res, size_t nopts, BSGreeks greek,double CoP, doub
 //	return res;
 //}
 
-void FBlsGreeks_seq_old(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig)
+void FBlsGreeks_seq(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig)
 {
 	using funt = decltype(&FBlsDelta);
 	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
@@ -161,25 +161,25 @@ void FBlsGreeks_seq_old(double* res, size_t nopts, BSGreeks greek, double CoP, d
 	}
 }
 
-std::vector<double>  FBlsGreeks_seq(BSGreeks greek, double CoP, double F, const std::vector<double>  & X, double df, double Tsigma, const std::vector<double> & sig)
-{
-	using funt = decltype(&FBlsDelta);
-	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
-	size_t nopts = X.size();
-	if (nopts != sig.size())
-		throw std::range_error(fmt::format("strikes size {} and prices/vols {}must be equal", nopts, sig.size()));
-	std::vector<double> res(nopts);
-	if ((greek == BSGreeks::implied_volatility && nopts >= 8) || (nopts >= 500))
-	{
-		auto f = [&](size_t i)
-			{
-				res[i] = funs[static_cast<size_t>(greek)](CoP, F, X[i], df, Tsigma, sig[i]);
-			};
-		tbb::parallel_for((size_t)0, nopts, f);
-	}
-	else {
-		for (size_t i = 0; i < nopts; ++i)
-			res[i] = funs[static_cast<size_t>(greek)](CoP, F, X[i], df, Tsigma, sig[i]);
-	}
-	return res;
-}
+//std::vector<double>  FBlsGreeks_seq(BSGreeks greek, double CoP, double F, const std::vector<double>  & X, double df, double Tsigma, const std::vector<double> & sig)
+//{
+//	using funt = decltype(&FBlsDelta);
+//	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
+//	size_t nopts = X.size();
+//	if (nopts != sig.size())
+//		throw std::range_error(fmt::format("strikes size {} and prices/vols {}must be equal", nopts, sig.size()));
+//	std::vector<double> res(nopts);
+//	if ((greek == BSGreeks::implied_volatility && nopts >= 8) || (nopts >= 500))
+//	{
+//		auto f = [&](size_t i)
+//			{
+//				res[i] = funs[static_cast<size_t>(greek)](CoP, F, X[i], df, Tsigma, sig[i]);
+//			};
+//		tbb::parallel_for((size_t)0, nopts, f);
+//	}
+//	else {
+//		for (size_t i = 0; i < nopts; ++i)
+//			res[i] = funs[static_cast<size_t>(greek)](CoP, F, X[i], df, Tsigma, sig[i]);
+//	}
+//	return res;
+//}
