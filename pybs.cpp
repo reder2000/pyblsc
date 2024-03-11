@@ -9,7 +9,7 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 
-void _FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, double F, py::array_t<double> cX_s, double df, double Tsigma, py::array_t<double> csig_s, bool par)
+void _FBlsGreeks_seq_py(py::array_t<double> &n_out, BSGreeks greek, double CoP, double F, py::array_t<double> const &cX_s, double df, double Tsigma, py::array_t<double> const &csig_s, bool par)
 {
     auto out = n_out.mutable_unchecked<1>();
     auto X_s = cX_s.unchecked<1>();

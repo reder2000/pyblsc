@@ -2,8 +2,8 @@ import timeit
 
 import numpy
 import sys
-# sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\Release")
-#sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild\RelWithDebInfo")
+sys.path.append(r"C:\dev\qustrat\pybslc\mybuild\Release")
+#sys.path.append(r"C:\dev\qustrat\pybslc\mybuild\RelWithDebInfo")
 #sys.path.append(r"C:\dev\qustrat\pyblsc\mybuild")
 #import pyblsc as ppp
 # import mybuild.Release.pyblsc as pyblsc
