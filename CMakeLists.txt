@@ -14,19 +14,7 @@ find_package(fmt CONFIG REQUIRED)
 # find_package(MKL CONFIG REQUIRED)
 # find_path(BSHOSHANY_THREAD_POOL_INCLUDE_DIRS "BS_thread_pool.hpp")
 find_package(Python COMPONENTS Interpreter Development)
-
-include(FetchContent) # once in the project to include the module
-
-FetchContent_Declare(pywrapcc
-                     GIT_REPOSITORY https://github.com/google/pywrapcc.git
-                     GIT_TAG        origin/main
-                     OVERRIDE_FIND_PACKAGE
-)
-FetchContent_MakeAvailable(pywrapcc)
-
-
-find_package(pywrapcc CONFIG REQUIRED)
-#find_package(pybind11 CONFIG REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
     # pybind11 method:
     pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp setup.py)
