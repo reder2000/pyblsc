@@ -125,7 +125,7 @@ def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
 
 
 nruns = 10000
-for n in range(1,100,1):
+for n in range(100,10000,1000):
     if 0 : # single call / loop
         # single call is almost already full speed
         print(n, int(nruns * n / timeit.Timer(lambda : blsprice_loop(n, None)).timeit(number=nruns) / 1000), 'k')

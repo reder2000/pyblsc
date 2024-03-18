@@ -69,8 +69,8 @@ namespace {
   // NOT RECOMMENDED.
   //#define POSITIVE_DENORMALISATION_CUTOFF DBL_MIN
 
-  static const double VOLATILITY_VALUE_TO_SIGNAL_PRICE_IS_BELOW_INTRINSIC = -DBL_MAX;
-  static const double VOLATILITY_VALUE_TO_SIGNAL_PRICE_IS_ABOVE_MAXIMUM = DBL_MAX;
+  static const double VOLATILITY_VALUE_TO_SIGNAL_PRICE_IS_BELOW_INTRINSIC = std::numeric_limits<double>::quiet_NaN(); //   -DBL_MAX;
+  static const double VOLATILITY_VALUE_TO_SIGNAL_PRICE_IS_ABOVE_MAXIMUM = std::numeric_limits<double>::quiet_NaN(); // DBL_MAX;
 
 #if defined( POSITIVE_DENORMALISATION_CUTOFF )
   inline bool is_below_horizon(double x) { return fabs(x) < POSITIVE_DENORMALISATION_CUTOFF; } // This weeds out denormalised (a.k.a. 'subnormal') numbers.
