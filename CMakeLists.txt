@@ -7,17 +7,19 @@ message("configuring ${PROJECT_NAME}...")
 add_compile_options("$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:RELWITHDEBINFO>>:/JMC>")
 add_compile_options("$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:RELWITHDEBINFO>>:/Od>")
 add_compile_options("$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:RELWITHDEBINFO>>:/Ob0>")
+add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
 find_package(Boost REQUIRED) # COMPONENTS math)
 find_package(TBB CONFIG REQUIRED)
-find_package(fmt CONFIG REQUIRED)
+#find_package(fmt CONFIG REQUIRED)
 # find_package(MKL CONFIG REQUIRED)
 # find_path(BSHOSHANY_THREAD_POOL_INCLUDE_DIRS "BS_thread_pool.hpp")
 find_package(Python COMPONENTS Interpreter Development)
 find_package(pybind11 CONFIG REQUIRED)
 
     # pybind11 method:
-    pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp setup.py)
+    pybind11_add_module(pyblsc pybs.cpp bs.cpp bs.h rando.cpp rando.h bsv.cpp bsv.h fbs.h fbs.cpp setup.py lets_be_rational.cpp  lets_be_rational.h normaldistribution.cpp  normaldistribution.h
+    rationalcubic.cpp  rationalcubic.h erf_cody.cpp)
 
     # Python method:
     #Python_add_library(pybs bs.cpp)
@@ -32,7 +34,7 @@ if (MSVC)
     set (MSVC_EXTRA_LIBS TBB::tbbmalloc_proxy )
 endif()
 
-target_link_libraries(pyblsc PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc fmt::fmt-header-only ${MSVC_EXTRA_LIBS} ) # MKL::MKL  Boost::math)
+target_link_libraries(pyblsc PRIVATE pybind11::module  Boost::boost TBB::tbb TBB::tbbmalloc ${MSVC_EXTRA_LIBS} ) # MKL::MKL  Boost::math) fmt::fmt-header-only 
 target_include_directories(pyblsc PRIVATE ${BSHOSHANY_THREAD_POOL_INCLUDE_DIRS})
 # target_link_libraries(main PRIVATE Boost::boost Boost::<lib1> Boost::<lib2> ...)
 

@@ -38,7 +38,7 @@ double FBlsPrice(double CoP, double F, double X, double DF, double Tsigma, doubl
 // BS  greeks
 enum class BSGreeks
 {
-	price=0, delta, gamma, vega, implied_volatility
+	price=0, delta, gamma, vega, implied_volatility, implied_volatility_jackel
 };
 
 

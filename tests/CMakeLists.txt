@@ -8,9 +8,9 @@ find_package(Catch2 CONFIG REQUIRED)
 
 include_directories(..)
 
-add_executable(pyblsc_tests prices.cpp ../fbs.cpp ../rando.cpp)
+add_executable(pyblsc_tests prices.cpp ../fbs.cpp ../rando.cpp ../lets_be_rational.cpp ../erf_cody.cpp ../normaldistribution.cpp ../rationalcubic.cpp)
 
-target_link_libraries(pyblsc_tests Catch2::Catch2WithMain TBB::tbb TBB::tbbmalloc fmt::fmt-header-only) #  fmt::fmt  date::date date::date-tz ${additional_libraries})
+target_link_libraries(pyblsc_tests Catch2::Catch2WithMain TBB::tbb TBB::tbbmalloc) #  fmt::fmt  date::date date::date-tz ${additional_libraries}) fmt::fmt-header-only
 set_property(TARGET pyblsc_tests PROPERTY CXX_STANDARD 23)
 
 message("... done pyblsc/tests Configuring")

@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include "fbs.h"
+#include "lets_be_rational.h"
 
 using Catch::Matchers::WithinAbs;
 
@@ -84,14 +85,23 @@ TEST_CASE("IV", "[select]")
 {
 	constexpr double eps = 0.5E-6;
 
-	for (auto CoP : { -1,1 })
+	for (auto CoP : { 1,-1 })
 		for (double S = 0.5; S < 1.5; S += 0.01)
 		{
-			double df = .97;
-			double sig = 0.3;
-			double pr = FBlsPrice(CoP, S, 1., df, 1., sig);
-			double iv = FBlsGreek(BSGreeks::implied_volatility, CoP, S, 1., df, 1., pr);
+			double df = .957 ;
+			double sig = 0.33;
+			double X = 1.05;
+			double Tsigma = 1.5;
+			double pr = FBlsPrice(CoP, S, X, df, Tsigma, sig);
+			//double pr2 = Black( S,  X,  sig,  Tsigma,  CoP/* q=±1 */);
+			double iv = FBlsGreek(BSGreeks::implied_volatility, CoP, S, X, df, Tsigma, pr);
 			REQUIRE_THAT(iv-sig, WithinAbs(0, 1e-6));
+			double iv2 = FBlsGreek(BSGreeks::implied_volatility_jackel, CoP, S, X, df, Tsigma, pr);
+			//if (fabs(iv2-sig)>1e-6)
+			//	iv2 = FBlsGreek(BSGreeks::implied_volatility_jackel, CoP, S, X, df, Tsigma, pr);
+			//else {
+				REQUIRE_THAT(iv2 - sig, WithinAbs(0, 1e-6));
+			// }
 		}
 }
 
@@ -104,9 +114,13 @@ TEST_CASE("IV2", "[select]")
 	for (auto CoP : { -1,1 })
 		for (double sig = 0.05; sig < 2.5; sig += 0.01)
 		{
-			double df = .97;
+			double df = .957;
 			double pr = FBlsPrice(CoP, 1.1, 1., df, 1., sig);
 			double iv = FBlsGreek(BSGreeks::implied_volatility, CoP, 1.1, 1., df, 1., pr);
 			REQUIRE_THAT(iv - sig, WithinAbs(0, 1e-6));
+			double iv2 = FBlsGreek(BSGreeks::implied_volatility_jackel, CoP, 1.1, 1., df, 1., pr);
+			if (fabs(iv2 - sig) > 1e-6)
+				iv2 = FBlsGreek(BSGreeks::implied_volatility_jackel, CoP, 1.1, 1., df, 1., pr);
+			REQUIRE_THAT(iv2 - sig, WithinAbs(0, 1e-6));
 		}
 }

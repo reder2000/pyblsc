@@ -21,12 +21,12 @@ CoP=-1 ; F=2252.6 ; X=  1100 ; df=1.00001 ; Tsigma=0.2 ; sig= 0.5366
 line1 = [-1,F,X,df,Tsigma,sig]
 line2 = [1,F,X,df,Tsigma,sig]
 
-c = pyblsc.FBlsGreek(Gr.price, *line1)
-p = pyblsc.FBlsGreek(Gr.price,*line2)
+p = pyblsc.FBlsGreek(Gr.price, *line1)
+c = pyblsc.FBlsGreek(Gr.price,*line2)
 line3 = [-1,F,X,df,Tsigma,p]
-line4 = [1,F,X,df,Tsigma,p]
-print(pyblsc.FBlsGreek(Gr.implied_volatility,*line3))
-print(pyblsc.FBlsGreek(Gr.implied_volatility,*line4))
+line4 = [1,F,X,df,Tsigma,c]
+print(pyblsc.FBlsGreek(Gr.implied_volatility_jackel,*line3))
+print(pyblsc.FBlsGreek(Gr.implied_volatility_jackel,*line4))
 
 def blsprice_loop(n, _): # 1.8 M opt / sec
      # for i in range(n//2+1):
@@ -61,7 +61,7 @@ def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
         # params += [False]
         res = numpy.array([0.]*n)
         return params,res
-    pyblsc.FBlsGreeks_seq(res,Gr.implied_volatility,*params)
+    pyblsc.FBlsGreeks_seq(res,Gr.implied_volatility_jackel,*params)
 
 
 # def f1():
@@ -125,7 +125,7 @@ def blsprice_inv_seq(params,res,n):  # 52.8 M opt / sec
 
 
 nruns = 10000
-for n in range(1,1000,2):
+for n in range(1,100,1):
     if 0 : # single call / loop
         # single call is almost already full speed
         print(n, int(nruns * n / timeit.Timer(lambda : blsprice_loop(n, None)).timeit(number=nruns) / 1000), 'k')

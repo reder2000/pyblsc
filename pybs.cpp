@@ -1,6 +1,5 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <fmt/format.h>
 #include "fbs.h"
 #include "bsv.h"
 #include <pybind11/stl.h>
@@ -16,9 +15,9 @@ void _FBlsGreeks_seq_py(py::array_t<double> n_out, BSGreeks greek, double CoP, d
     auto sig_s = csig_s.unchecked<1>();
     size_t nopts = out.shape(0);
     if (nopts != X_s.shape(0))
-        throw std::range_error(fmt::format("results {} and strikes size {} must be equal", out.shape(0), X_s.shape(0)));
+        throw std::range_error(std::format("results {} and strikes size {} must be equal", out.shape(0), X_s.shape(0)));
     if (sig_s.shape(0) != X_s.shape(0))
-        throw std::range_error(fmt::format("strikes size {} and prices/vols {}must be equal", X_s.shape(0), sig_s.shape(0)));
+        throw std::range_error(std::format("strikes size {} and prices/vols {}must be equal", X_s.shape(0), sig_s.shape(0)));
     _FBlsGreeks_seq(out.mutable_data(0), nopts, greek, CoP, F, X_s.data(0), df, Tsigma, sig_s.data(0),par);
 }
 
@@ -29,9 +28,9 @@ void FBlsGreeks_seq_py(py::array_t<double> &n_out, BSGreeks greek, double CoP, d
     auto sig_s = csig_s.unchecked<1>();
     size_t nopts = out.shape(0);
     if (nopts != X_s.shape(0))
-        throw std::range_error(fmt::format("results {} and strikes size {} must be equal", out.shape(0), X_s.shape(0)));
+        throw std::range_error(std::format("results {} and strikes size {} must be equal", out.shape(0), X_s.shape(0)));
     if (sig_s.shape(0) != X_s.shape(0))
-        throw std::range_error(fmt::format("strikes size {} and prices/vols {}must be equal", X_s.shape(0), sig_s.shape(0)));
+        throw std::range_error(std::format("strikes size {} and prices/vols {}must be equal", X_s.shape(0), sig_s.shape(0)));
     FBlsGreeks_seq(out.mutable_data(0), nopts, greek, CoP, F, X_s.data(0), df, Tsigma, sig_s.data(0));
 }
 
@@ -44,7 +43,8 @@ PYBIND11_MODULE(pyblsc, m) {
 
     py::enum_<BSGreeks>(m, "BSGreeks")
         .value("price", BSGreeks::price)
-        .value("delta", BSGreeks::delta).value("gamma", BSGreeks::gamma).value("vega", BSGreeks::vega).value("implied_volatility",BSGreeks::implied_volatility);
+        .value("delta", BSGreeks::delta).value("gamma", BSGreeks::gamma).value("vega", BSGreeks::vega).value("implied_volatility",BSGreeks::implied_volatility)
+        .value("implied_volatility_jackel", BSGreeks::implied_volatility_jackel);;
 
     m.def("FBlsGreek", &FBlsGreek, "Black Scholes forward price",
         "greek"_a, "CoP"_a, "F"_a, "X"_a, "df"_a, "Tsigma"_a, "sig"_a);

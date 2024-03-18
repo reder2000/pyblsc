@@ -5,7 +5,8 @@
 #include <boost/math/tools/roots.hpp>
 #include "rando.h"
 #include <tbb/parallel_for.h>
-#include <fmt/format.h>
+
+#include "lets_be_rational.h"
 
 constexpr size_t ndigits = 23;
 
@@ -108,10 +109,17 @@ double FBlsImpliedVol(double CoP, double F, double X, double df, double Tsigma, 
 }
 
 
+double FBlsImpliedVolJackel(double CoP, double F, double X, double df, double Tsigma, double price)
+{
+	double res =  ImpliedBlackVolatility(price/df, F, X, Tsigma, CoP);
+	return res;
+}
+
+
 double FBlsGreek(BSGreeks greek, double CoP, double F, double X, double df, double Tsigma, double sig)
 {
 	using funt = decltype(&FBlsDelta);
-	static funt funs[5] = {&FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol};
+	static funt funs[6] = {&FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol,&FBlsImpliedVolJackel};
 	return funs[static_cast<size_t>(greek)](CoP,F, X, df, Tsigma, sig);
 
 }
@@ -120,7 +128,7 @@ double FBlsGreek(BSGreeks greek, double CoP, double F, double X, double df, doub
 void _FBlsGreeks_seq( double *res, size_t nopts, BSGreeks greek,double CoP, double F, const double *X, double df, double Tsigma, const double *sig, bool par)
 {
 	using funt = decltype(&FBlsDelta);
-	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
+	static funt funs[6] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol,&FBlsImpliedVolJackel };
 	if (par) {
 		auto f = [&](size_t i)
 			{
@@ -146,8 +154,8 @@ void _FBlsGreeks_seq( double *res, size_t nopts, BSGreeks greek,double CoP, doub
 void FBlsGreeks_seq(double* res, size_t nopts, BSGreeks greek, double CoP, double F, const double* X, double df, double Tsigma, const double* sig)
 {
 	using funt = decltype(&FBlsDelta);
-	static funt funs[5] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol };
-	if ((greek == BSGreeks::implied_volatility && nopts>=8) || (nopts>=500))
+	static funt funs[6] = { &FBlsPrice, &FBlsDelta, &FBlsGamma, &FBlsVega,&FBlsImpliedVol, &FBlsImpliedVolJackel };
+	if (((greek == BSGreeks::implied_volatility || greek==BSGreeks::implied_volatility_jackel) && nopts>=5	) || (nopts>=500))
 	{
 		auto f = [&](size_t i)
 			{
